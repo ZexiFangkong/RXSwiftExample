@@ -21,6 +21,7 @@ This is example where view model is mutable. Some consider this to be MVVM, some
  Please note that there is no explicit state, outputs are defined using inputs and dependencies.
  Please note that there is no dispose bag, because no subscription is being made.
 */
+/*
 class GithubSignupViewModel1 {
     // outputs {
 
@@ -115,4 +116,49 @@ class GithubSignupViewModel1 {
             .distinctUntilChanged()
             .share(replay: 1)
     }
+}
+
+*/
+
+class GithubSignupViewModel1 {
+
+    let validatedUsername : Observable<ValidationResult>
+    var validatePasswrod : Observable<ValidationResult>
+//    var validatedPasswordRepeated : Observable<ValidationResult>?
+//
+//    var signupEnabled: Observable<Bool>?
+    
+    init(input: (
+        username: Observable<String>,
+        password: Observable<String>,
+        repeatedPassword: Observable<String>,
+        loginTaps: Observable<Bool>
+        ),
+        dependency: (
+        API: GitHubAPI,
+        validationService: GitHubValidationService,
+        wireframe: Wireframe
+        )
+    ) {
+        
+        let API = dependency.API
+        let validationService = dependency.validationService
+        let wireframe = dependency.wireframe
+        
+        // faltMapLatest 后面跟() 与 {} 区别？
+        validatedUsername = input.username.flatMapLatest { username in
+            return validationService.validateUsername(username)
+                .subscribeOn(MainScheduler.instance)
+                .catchErrorJustReturn(.failed(message: "Error contacting server"))
+        }.share(replay: 1)
+        // flatMapLatest 报错, 什么原因？
+        validatePasswrod = input.password.flatMapLatest { password in
+            return validationService.validatePassword(password)
+            
+        }
+                            
+    
+    }
+    
+    
 }

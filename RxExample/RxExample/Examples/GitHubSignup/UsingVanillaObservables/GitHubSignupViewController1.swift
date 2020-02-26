@@ -26,6 +26,7 @@ class GitHubSignupViewController1 : ViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        /*
         let viewModel = GithubSignupViewModel1(
             input: (
                 username: usernameOutlet.rx.text.orEmpty.asObservable(),
@@ -39,7 +40,7 @@ class GitHubSignupViewController1 : ViewController {
                 wireframe: DefaultWireframe.shared
             )
         )
-
+    
         // bind results to  {
         viewModel.signupEnabled
             .subscribe(onNext: { [weak self] valid  in
@@ -70,6 +71,8 @@ class GitHubSignupViewController1 : ViewController {
             })
             .disposed(by: disposeBag)
         //}
+ 
+ */
 
         let tapBackground = UITapGestureRecognizer()
         tapBackground.rx.event

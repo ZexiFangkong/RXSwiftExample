@@ -37,7 +37,7 @@ class ImagePickerController: ViewController {
             }
             .bind(to: imageView.rx.image)
             .disposed(by: disposeBag)
-
+        
         galleryButton.rx.tap
             .flatMapLatest { [weak self] _ in
                 return UIImagePickerController.rx.createWithParent(self) { picker in

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		04A60E95240611EA00F6D812 /* SimpleValidationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A60E94240611EA00F6D812 /* SimpleValidationViewModel.swift */; };
 		0744CDD41C4DB5F000720FD2 /* GeolocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0744CDD31C4DB5F000720FD2 /* GeolocationService.swift */; };
 		0744CDED1C4DB78600720FD2 /* GeolocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0744CDEC1C4DB78600720FD2 /* GeolocationViewController.swift */; };
 		075F13101B4E9D5A000D7861 /* APIWrappersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 075F130F1B4E9D5A000D7861 /* APIWrappersViewController.swift */; };
@@ -292,6 +293,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		04A60E94240611EA00F6D812 /* SimpleValidationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleValidationViewModel.swift; sourceTree = "<group>"; };
 		0744CDD31C4DB5F000720FD2 /* GeolocationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeolocationService.swift; sourceTree = "<group>"; };
 		0744CDEC1C4DB78600720FD2 /* GeolocationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeolocationViewController.swift; sourceTree = "<group>"; };
 		075F130F1B4E9D5A000D7861 /* APIWrappersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIWrappersViewController.swift; sourceTree = "<group>"; };
@@ -926,6 +928,7 @@
 			children = (
 				AE51C1DC1DE73649005BAF5F /* SimpleValidation.storyboard */,
 				C8BCD3E91C14B02A005F1280 /* SimpleValidationViewController.swift */,
+				04A60E94240611EA00F6D812 /* SimpleValidationViewModel.swift */,
 			);
 			path = SimpleValidation;
 			sourceTree = "<group>";
@@ -1332,6 +1335,7 @@
 				C83367231AD029AE00C668A7 /* Example.swift in Sources */,
 				C890A65D1AEC084100AFF7E6 /* ViewController.swift in Sources */,
 				C8C46DAA1B47F7110020D71E /* WikipediaSearchCell.swift in Sources */,
+				04A60E95240611EA00F6D812 /* SimpleValidationViewModel.swift in Sources */,
 				C82FF12C1F93E84600BDB34D /* Changeset.swift in Sources */,
 				B1604CB51BE49F8D002E1279 /* DownloadableImage.swift in Sources */,
 				075F13101B4E9D5A000D7861 /* APIWrappersViewController.swift in Sources */,

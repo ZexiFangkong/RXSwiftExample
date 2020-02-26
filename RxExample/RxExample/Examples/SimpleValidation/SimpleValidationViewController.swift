@@ -9,6 +9,7 @@
 import UIKit
 import RxSwift
 import RxCocoa
+//import SimpleValidationViewModel
 
 private let minimalUsernameLength = 5
 private let minimalPasswordLength = 5
@@ -22,38 +23,36 @@ class SimpleValidationViewController : ViewController {
     @IBOutlet weak var passwordValidOutlet: UILabel!
 
     @IBOutlet weak var doSomethingOutlet: UIButton!
+    
+//    private var viewModel: SimpleValidationViewModel
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        var viewModel: SimpleValidationViewModel
 
         usernameValidOutlet.text = "Username has to be at least \(minimalUsernameLength) characters"
         passwordValidOutlet.text = "Password has to be at least \(minimalPasswordLength) characters"
-
-        let usernameValid = usernameOutlet.rx.text.orEmpty
-            .map { $0.count >= minimalUsernameLength }
-            .share(replay: 1) // without this map would be executed once for each binding, rx is stateless by default
-
-        let passwordValid = passwordOutlet.rx.text.orEmpty
-            .map { $0.count >= minimalPasswordLength }
-            .share(replay: 1)
-
-        let everythingValid = Observable.combineLatest(usernameValid, passwordValid) { $0 && $1 }
-            .share(replay: 1)
-
-        usernameValid
-            .bind(to: passwordOutlet.rx.isEnabled)
+        
+        viewModel = SimpleValidationViewModel(
+            username: usernameOutlet.rx.text.orEmpty.asObservable(),
+            passwrod: passwordOutlet.rx.text.orEmpty.asObservable()
+        )
+        
+        viewModel.usernameValid
+            .bind(to: self.usernameValidOutlet.rx.isHidden)
             .disposed(by: disposeBag)
-
-        usernameValid
-            .bind(to: usernameValidOutlet.rx.isHidden)
+        
+        viewModel.usernameValid
+            .bind(to: self.passwordOutlet.rx.isEnabled)
             .disposed(by: disposeBag)
-
-        passwordValid
-            .bind(to: passwordValidOutlet.rx.isHidden)
+        
+        viewModel.passwrodValid
+            .bind(to: self.passwordValidOutlet.rx.isHidden)
             .disposed(by: disposeBag)
-
-        everythingValid
-            .bind(to: doSomethingOutlet.rx.isEnabled)
+        
+        viewModel.everythingValid
+            .bind(to: self.doSomethingOutlet.rx.isEnabled)
             .disposed(by: disposeBag)
 
         doSomethingOutlet.rx.tap
