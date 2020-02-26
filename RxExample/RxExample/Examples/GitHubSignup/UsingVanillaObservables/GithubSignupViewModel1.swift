@@ -123,16 +123,23 @@ class GithubSignupViewModel1 {
 class GithubSignupViewModel1 {
 
     let validatedUsername : Observable<ValidationResult>
-    var validatePasswrod : Observable<ValidationResult>
-//    var validatedPasswordRepeated : Observable<ValidationResult>?
-//
-//    var signupEnabled: Observable<Bool>?
+    let validatePasswrod : Observable<ValidationResult>
+    let validatedPasswordRepeated : Observable<ValidationResult>
+    let passwrod: Observable<Bool>
+    //Is signup button enabled
+    let signupEnabled: Observable<Bool>
+    
+    // Has user signed in
+    let signedIn: Observable<Bool>
+
+    // Is signing process in progress
+    let signingIn: Observable<Bool>
     
     init(input: (
         username: Observable<String>,
         password: Observable<String>,
         repeatedPassword: Observable<String>,
-        loginTaps: Observable<Bool>
+        loginTaps: Observable<Void>
         ),
         dependency: (
         API: GitHubAPI,
@@ -140,6 +147,11 @@ class GithubSignupViewModel1 {
         wireframe: Wireframe
         )
     ) {
+//        Observable
+//        ObservableType
+//        ObserverType
+//        Event
+        
         
         let API = dependency.API
         let validationService = dependency.validationService
@@ -152,13 +164,77 @@ class GithubSignupViewModel1 {
                 .catchErrorJustReturn(.failed(message: "Error contacting server"))
         }.share(replay: 1)
         // flatMapLatest 报错, 什么原因？
-        validatePasswrod = input.password.flatMapLatest { password in
-            return validationService.validatePassword(password)
+        // map 与 faltMapLatest 区别
+        validatePasswrod = input.password.map { passwrod in
+            validationService.validatePassword(passwrod)
             
+        }.share(replay: 1)
+      
+        validatedPasswordRepeated = Observable.combineLatest(input.password, input.repeatedPassword, resultSelector:
+            validationService.validateRepeatedPassword).share(replay: 1)
+        
+        passwrod = Observable.combineLatest(input.password, input.repeatedPassword)
+            .map { pw, repeatedPw in
+                 pw == repeatedPw
+        }.share(replay: 1)
+        
+        let signingIn = ActivityIndicator()
+        self.signingIn = signingIn.asObservable()
+        
+        let usernameAndPassword = Observable.combineLatest(input.username, input.password) { (username: $0, password: $1) }
+        
+        signedIn = input.loginTaps.withLatestFrom(usernameAndPassword)
+            .flatMapLatest { pari in
+                return API.signup(pari.username, password: pari.password)
+                    .observeOn(MainScheduler.instance)
+                .catchErrorJustReturn(false)
+                .trackActivity(signingIn)
+            }
+            .flatMapLatest { loggedIn -> Observable<Bool> in
+            let message = loggedIn ? "Mock: Signed in to GitHub." : "Mock: Sign in to GitHub failed"
+            return wireframe.promptFor(message, cancelAction: "OK", actions: [])
+                .map { _ in
+                    loggedIn
+                }
+            }
+            .share(replay: 1)
+            
+        
+//        signupEnabled = Observable.combineLatest(validatedUsername,
+//                                                 validatePasswrod,
+//                                                 validatedPasswordRepeated,
+//                                                 self.signingIn,
+//                                                 passwrod
+//        ) { username, password, repeatPassword, signingIn passwrod in
+//            username.isValid &&
+//            password.isValid &&
+//            repeatPassword.isValid &&
+//            !signingIn &&
+//            passwrod
+//
+//        }
+//        .distinctUntilChanged()
+//        .share(replay: 1)
+        
+        signupEnabled = Observable.combineLatest(validatedUsername,
+                                                 validatePasswrod,
+                                                 validatedPasswordRepeated,
+                                                 passwrod,
+                                                 self.signingIn
+                                                 )
+        { username, password, repeatPassword, passwrodCheckout, siginingIn in
+                                                                username.isValid &&
+                                                    password.isValid &&
+                                                    repeatPassword.isValid &&
+                                                    !siginingIn &&
+                                                    passwrodCheckout
+                                                    
         }
-                            
+        .distinctUntilChanged()
+        .share(replay:1)
     
     }
     
     
 }
+
